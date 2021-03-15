@@ -1,46 +1,79 @@
 @extends('layouts.app')
 
 @section('content')
+    @foreach($errors->all() as $error)
+        {{ $error }}
+    @endforeach
+    @if (session('message'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('message') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+    @endif
     <h1>{{ $room->name }}</h1>
     <h2>Teacher: {{ $room->teacherName }}</h2>
-        @can('teacher-only', $room)
-            <h4>Attendance:</h4>
-            <form method="post" action="{{ route('add_attendance') }}">
-                @csrf
-                <div class="form-group row">
-                    <label for="schedule" class="col-sm-3 col-form-label">Select Schedule:</label>
-                    <select name="schedule" class="form-control col-sm" id="schedule">
-                        <option selected hidden disabled>...</option>
-                        @foreach($room->schedules as $schedule)
-                        <option value="{{ $schedule->id }}">{{ $schedule->schedule_time }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group row">
-                    <label for="date" class="col-sm-3 col-form-label">
-                        Date:
-                    </label>
-                    <input type="date" name="attendance_date" value="{{ date('Y-m-d') }}" class="form-control col-sm" id="date">
-                </div>
-                <div class="form-group row">
-                    <label for="expiry_time" class="col-sm-3 col-form-label">
-                        Expire Time:
-                    </label>
-                    <input type="time" name="expiry_time" value="{{ date('H:i') }}" class="form-control col-sm" id="expiry_time">
-                </div>
-                <div class="form-group row">
-                    <label for="description" class="col-sm-3 col-form-label">
-                        Description:
-                    </label>
-                    <input type="text" value="Attendance" name="description" class="form-control col-sm" id="description">
-                </div>
-                <div class="row">
-                    <button type="submit" class="btn btn-primary btn-sm col-auto ml-auto">Add Attendance</button>
-                </div>
-            </form>
-            <br>
-        @endcan
 
+    @can('teacher-only', $room)
+        <h4>Attendance:</h4>
+        <form method="post" action="{{ route('add_attendance') }}">
+            @csrf
+            <div class="form-group row">
+                <label for="schedule" class="col-sm-3 col-form-label">Select Schedule:</label>
+                <select name="schedule" class="form-control col-sm @error('schedule') is-invalid @enderror" id="schedule">
+                    <option selected hidden disabled>...</option>
+                    @foreach($room->schedules as $schedule)
+                    <option value="{{ $schedule->id }}">{{ $schedule->schedule_time }}</option>
+                    @endforeach
+                </select>
+
+            </div>
+            @error('schedule')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+            <div class="form-group row">
+                <label for="date" class="col-sm-3 col-form-label">
+                    Date:
+                </label>
+                <input type="date" name="attendance_date" value="{{ date('Y-m-d') }}" class="form-control col-sm @error('attendance_date') is-invalid @enderror" id="date">
+
+            </div>
+            @error('attendance_date')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            <div class="form-group row">
+                <label for="expiry_time" class="col-sm-3 col-form-label">
+                    Expire Time:
+                </label>
+                <input type="time" name="expiry_time" value="{{ date('H:i') }}" class="form-control col-sm @error('expiry_time') is-invalid @enderror" id="expiry_time">
+
+            </div>
+            @error('expiry_time')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            <div class="form-group row">
+                <label for="description" class="col-sm-3 col-form-label">
+                    Description:
+                </label>
+                <input type="text" value="Attendance" name="description" class="form-control col-sm @error('description') is-invalid @enderror" id="description">
+
+            </div>
+            @error('description')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            <div class="row">
+                <button type="submit" class="btn btn-primary btn-sm col-auto ml-auto">Add Attendance</button>
+            </div>
+        </form>
+        <br>
+
+        <form action="/emailNotify/{{$room->id}}" method="post">
+            @csrf
+            <button type="button" class="btn btn-success btn-sm" id="notify_students">Notify Students on Assignments</button>
+        </form>
+    @endcan
     <h3>Attendances</h3>
     @can('teacher-only', $room)
         <div class="form-group row">
@@ -48,13 +81,15 @@
                 Date:
             </label>
             <input type="date" id="a_date" value="{{ date('Y-m-d') }}" class="form-control col-sm-4">
-            <div class="col-sm-2">
+            <div class="col-sm-auto">
                 <button type="button" id="date_select" class="btn btn-primary">Select</button>
+            </div>
+            <div class="col-sm-auto">
+                <button type="button" id="date_clear" class="btn btn-danger">Clear</button>
             </div>
         </div>
         <table class="table table-sm">
             <thead>
-
                 <tr>
                     <th>Date</th>
                     <th>Schedule</th>
@@ -73,6 +108,7 @@
             @method('put')
         </form>
     @elsecan('student-only', $room)
+        <a href="/calendar">Go To Assessment Calendar</a>
         <table class="table table-sm">
             <tr>
                 <th>Date</th>
@@ -144,10 +180,21 @@
             window.open(url);
         });
 
+        $('#notify_students').click(function(event){
+            $(this).attr('disabled', true);
+            $(this).closest('form').submit();
+            $(this).after('Sending');
+        });
+
         $('#date_select').click(function(event){
             event.preventDefault();
             var date = $('#a_date').val();
             getAttendances(date);
+        });
+
+        $('#date_clear').click(function(event){
+            event.preventDefault();
+            getAttendances();
         });
 
     </script>

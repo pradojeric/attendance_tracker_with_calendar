@@ -37,6 +37,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function routeNotificationForMail($notification)
+    {
+        // // Return email address only...
+        // return $this->email;
+
+        // Return name and email address...
+        return [$this->email => $this->name];
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class);
@@ -72,6 +81,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Room::class, 'room_user', 'student_id' ,'room_id');
     }
 
+    public function assignments()
+    {
+        return $this->hasManyThrough(Assignment::class, RoomUser::class, 'student_id', 'room_id', 'id', 'room_id');
+    }
+
+    public function finishedAssignments()
+    {
+        return $this->belongsToMany(Assignment::class, 'assignment_student', 'student_id', 'assignment_id')->withTimestamps();
+    }
+
     public function roomTeacher()
     {
         return $this->hasMany(Room::class, 'teacher_id');
@@ -95,5 +114,10 @@ class User extends Authenticatable
     public function isPresent($attendance)
     {
         if($this->attendances->contains($attendance)) return true;
+    }
+
+    public function isLate($attendance)
+    {
+        if (new \DateTime(strtotime($this->present_date)) > new \DateTime(strtotime($attendance->attendance_date))) return true;
     }
 }

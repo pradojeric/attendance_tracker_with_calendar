@@ -36,6 +36,12 @@ Route::middleware('auth')->group(function(){
 
     Route::post('/attendance/get/{room}', 'AttendanceController@getAttendances');
 
+    Route::post('/emailNotify/{room}', 'AssignmentController@emailNotify');
+
+    Route::get('/calendar', 'AssignmentController@viewCalendar');
+    Route::get('/view/{assignment}', 'AssignmentController@viewAssign');
+    Route::get('/cal_test', 'AssignmentController@test');
+
     Route::get('/test/', function(){
         if( App\User::find(4)->attendances->where('pivot.schedule_id', 2)->where('pivot.attendance_date', date('Y-m-d', strtotime(now())))->flatten()->pluck('pivot.attendance_date')){
             return true;

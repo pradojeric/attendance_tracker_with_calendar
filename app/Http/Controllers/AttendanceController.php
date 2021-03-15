@@ -10,18 +10,22 @@ use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
-
     //Teacher
-
     public function viewAttendance(Attendance $attendance)
     {
         $this->authorize('own-schedule-teacher', $attendance->schedule);
-
         return view('rooms.attendance', compact('attendance'));
     }
 
     public function addAttendance(Request $request)
     {
+        $request->validate([
+            'schedule' => 'required',
+            'description' => 'required',
+            'attendance_date' => 'required',
+            'expiry_time' => 'required',
+        ]);
+
         $schedule = Schedule::find($request->schedule);
         $this->authorize('own-schedule-teacher', $schedule);
 
@@ -36,7 +40,6 @@ class AttendanceController extends Controller
 
     public function activateAttendance(Request $request, Attendance $attendance)
     {
-
         $this->authorize('own-schedule-teacher', $attendance->schedule);
 
         $attendance->attendance = !$attendance->attendance;
@@ -57,11 +60,10 @@ class AttendanceController extends Controller
     public function getAttendances(Request $request, Room $room)
     {
         if(empty($request->date))
-            $attendances = Attendance::whereIn('schedule_id', $room->schedules->pluck('id'))->get();
+            $attendances = Attendance::whereIn('schedule_id', $room->schedules->pluck('id'))->latest()->get();
         else{
             $date = date('Y-m-d', strtotime($request->date));
-
-            $attendances = Attendance::whereIn('schedule_id', $room->schedules->pluck('id'))->whereDate('attendance_date', $date)->get();
+            $attendances = Attendance::whereIn('schedule_id', $room->schedules->pluck('id'))->whereDate('attendance_date', $date)->latest()->get();
         }
 
         $output = "";
@@ -91,7 +93,6 @@ class AttendanceController extends Controller
     }
 
     //Students
-
     public function studentAttend(Request $request, Attendance $attendance)
     {
         $this->authorize('own-schedule-students', $attendance->schedule);
@@ -103,8 +104,7 @@ class AttendanceController extends Controller
 
     public function getStudentAttendances(Room $room)
     {
-
-        $attendances = Attendance::whereIn('schedule_id', $room->schedules->pluck('id'))->where('attendance', 1)->get();
+        $attendances = Attendance::whereIn('schedule_id', $room->schedules->pluck('id'))->where('attendance', 1)->latest()->get();
 
         $output = "";
 

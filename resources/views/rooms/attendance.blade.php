@@ -16,20 +16,13 @@
         </thead>
         <tbody>
             @foreach ($attendance->students as $student)
-                <tr>
+                <tr class="@if($student->isLate($attendance)) text-danger @endif">
                     <td>{{ $student->name }}</td>
                     <td>{{ $student->present_date }}</td>
                     <td>{{ $student->present_time }}</td>
-                    <td>
-                        @if (strtotime($student->present_time) > strtotime($attendance->expiry_time))
-                            Late
-                        @else
-                            On time
-                        @endif
-                    </td>
+                    <td>@if($student->isLate($attendance)) Late @else On time @endif</td>
                 </tr>
             @endforeach
         </tbody>
-
     </table>
 @endsection
