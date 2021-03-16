@@ -47,7 +47,7 @@
                 <label for="expiry_time" class="col-sm-3 col-form-label">
                     Expire Time:
                 </label>
-                <input type="time" name="expiry_time" value="{{ date('H:i') }}" class="form-control col-sm @error('expiry_time') is-invalid @enderror" id="expiry_time">
+                <input type="time" name="expiry_time" value="{{ date('H:i', strtotime('+10 minutes')) }}" class="form-control col-sm @error('expiry_time') is-invalid @enderror" id="expiry_time">
 
             </div>
             @error('expiry_time')
@@ -126,7 +126,7 @@
             @csrf
         </form>
     @endcan
-
+<attendance-alert room_id={{ $room->id }}></attendance-alert>
 @endsection
 
 @section('scripts')

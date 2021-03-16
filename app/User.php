@@ -83,7 +83,8 @@ class User extends Authenticatable
 
     public function assignments()
     {
-        return $this->hasManyThrough(Assignment::class, RoomUser::class, 'student_id', 'room_id', 'id', 'room_id');
+        //return $this->hasManyThrough(Assignment::class, RoomUser::class, 'student_id', 'room_id', 'id', 'room_id');
+        return $this->rooms->map->assignments->flatten();
     }
 
     public function finishedAssignments()

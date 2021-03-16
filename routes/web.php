@@ -1,5 +1,8 @@
 <?php
 
+use App\Events\AttendanceActivated;
+use App\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,12 +17,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('rooms.index');
 });
 
 Auth::routes([
     'register' => false, 'reset' => false
 ]);
+
+Route::get('/fire', function(){
+    AttendanceActivated::dispatch();
+    return "fire";
+});
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -40,10 +48,9 @@ Route::middleware('auth')->group(function(){
 
     Route::get('/calendar', 'AssignmentController@viewCalendar');
     Route::get('/view/{assignment}', 'AssignmentController@viewAssign');
-    Route::get('/cal_test', 'AssignmentController@test');
 
     Route::get('/test/', function(){
-        if( App\User::find(4)->attendances->where('pivot.schedule_id', 2)->where('pivot.attendance_date', date('Y-m-d', strtotime(now())))->flatten()->pluck('pivot.attendance_date')){
+        if( User::find(4)->attendances->where('pivot.schedule_id', 2)->where('pivot.attendance_date', date('Y-m-d', strtotime(now())))->flatten()->pluck('pivot.attendance_date')){
             return true;
         }
         return false;

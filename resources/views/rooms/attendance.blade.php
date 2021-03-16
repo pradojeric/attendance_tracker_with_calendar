@@ -11,7 +11,7 @@
                 <th>Name of Student</th>
                 <th>Attendance Present</th>
                 <th>Attendance Time</th>
-                <th>Verdict</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>

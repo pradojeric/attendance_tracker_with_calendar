@@ -18,7 +18,7 @@ class CreateAttendancesTable extends Migration
             $table->foreignId('schedule_id');
             $table->string('description');
             $table->date('attendance_date');
-            $table->boolean('attendance')->default(0);
+            $table->boolean('attendance')->default(1);
             $table->time('expiry_time');
             $table->timestamps();
         });

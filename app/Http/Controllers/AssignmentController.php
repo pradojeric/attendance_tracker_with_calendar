@@ -6,6 +6,7 @@ use App\Room;
 use App\User;
 use Carbon\Carbon;
 use App\Assignment;
+use App\Events\AttendanceActivated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\EmailNotification;
@@ -19,15 +20,16 @@ class AssignmentController extends Controller
         // $user = User::where('email', 'pradoji.627.stud@cdd.edu.ph')->first();
 
         // $user->notify(new EmailNotification($room));
-        Notification::send($room->students, new EmailNotification($room));
-        return back()->with('message', "Email has been sent");
+        event(new AttendanceActivated($room));
+        //Notification::send($room->students, new EmailNotification($room));
+        //return back()->with('message', "Email has been sent");
     }
 
     public function viewCalendar()
     {
         $events = [];
 
-        $assignments = Auth::user()->assignments->sortBy('deadline');
+        $assignments = Auth::user()->assignments()->sortBy('deadline');
         if($assignments->count()) {
             foreach ($assignments as $key => $value) {
                 $start = Carbon::createFromFormat('Y-m-d H:i:s', $value->deadline);
