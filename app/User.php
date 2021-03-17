@@ -92,6 +92,26 @@ class User extends Authenticatable
         return $this->belongsToMany(Assignment::class, 'assignment_student', 'student_id', 'assignment_id')->withTimestamps();
     }
 
+    public function isAssignmentFinished($assignment)
+    {
+        return $this->finishedAssignments->contains($assignment);
+    }
+
+    public function assessments()
+    {
+        return $this->rooms->map->assessments->flatten();
+    }
+
+    public function finishedAssessments()
+    {
+        return $this->belongsToMany(Assessment::class, 'assessment_student', 'student_id', 'assessment_id')->withPivot('score')->withTimestamps();
+    }
+
+    public function isAssessmentFinished($assessment)
+    {
+        return $this->finishedAssessments->contains($assessment);
+    }
+
     public function roomTeacher()
     {
         return $this->hasMany(Room::class, 'teacher_id');

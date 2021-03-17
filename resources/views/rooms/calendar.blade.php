@@ -8,6 +8,8 @@
 
 <h1>Assignment Calendar</h1>
 Number of assignments: {{ $assignments->count() }}
+<br>
+Number of assessments: {{ $assessments->count() }}
 
 <div id="calendar"></div>
 @endsection
@@ -34,6 +36,7 @@ Number of assignments: {{ $assignments->count() }}
                 navLinks: true,
                 allDaySlot: false,
                 nowIndicator: true,
+                showNonCurrentDates: false,
             });
             calendar.setOption('contentHeight', 600);
             calendar.render();

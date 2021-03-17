@@ -108,7 +108,6 @@
             @method('put')
         </form>
     @elsecan('student-only', $room)
-        <a href="/calendar">Go To Assessment Calendar</a>
         <table class="table table-sm">
             <tr>
                 <th>Date</th>

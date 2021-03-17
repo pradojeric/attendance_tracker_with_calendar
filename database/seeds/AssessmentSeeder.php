@@ -1,10 +1,9 @@
 <?php
 
-use App\Room;
-use App\Assignment;
+use App\Assessment;
 use Illuminate\Database\Seeder;
 
-class AssignmentSeeder extends Seeder
+class AssessmentSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,6 +12,7 @@ class AssignmentSeeder extends Seeder
      */
     public function run()
     {
-        factory(Assignment::class, 10)->create();
+        //
+        factory(Assessment::class, 10)->create();
     }
 }
