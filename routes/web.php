@@ -51,6 +51,9 @@ Route::middleware('auth')->group(function(){
     Route::get('/view/assign/{assignment}', 'AssignmentController@viewAssign');
     Route::get('/view/assessment/{assessment}', 'AssessmentController@viewAssessment');
 
+    Route::get('/rooms/{room}/assessments', 'AssessmentController@index');
+    Route::get('/assessment/{assessment}', 'AssessmentController@show');
+
     Route::get('/test/', function(){
         if( User::find(4)->attendances->where('pivot.schedule_id', 2)->where('pivot.attendance_date', date('Y-m-d', strtotime(now())))->flatten()->pluck('pivot.attendance_date')){
             return true;

@@ -28,7 +28,6 @@
                     <option value="{{ $schedule->id }}">{{ $schedule->schedule_time }}</option>
                     @endforeach
                 </select>
-
             </div>
             @error('schedule')
                 <div class="alert alert-danger">{{ $message }}</div>
@@ -48,7 +47,6 @@
                     Expire Time:
                 </label>
                 <input type="time" name="expiry_time" value="{{ date('H:i', strtotime('+10 minutes')) }}" class="form-control col-sm @error('expiry_time') is-invalid @enderror" id="expiry_time">
-
             </div>
             @error('expiry_time')
                     <div class="alert alert-danger">{{ $message }}</div>
@@ -58,7 +56,6 @@
                     Description:
                 </label>
                 <input type="text" value="Attendance" name="description" class="form-control col-sm @error('description') is-invalid @enderror" id="description">
-
             </div>
             @error('description')
                     <div class="alert alert-danger">{{ $message }}</div>
@@ -125,110 +122,106 @@
             @csrf
         </form>
     @endcan
-<attendance-alert room_id={{ $room->id }}></attendance-alert>
 @endsection
 
 @section('scripts')
 
-@can('teacher-only', $room)
-    <script>
+    @can('teacher-only', $room)
+        <script>
 
-        getAttendances();
-
-        function getAttendances(date = null)
-        {
-            var url = "{{ url('/attendance/get/') }}/" + {{ $room->id }} + "/";
-            var _token = '{{ csrf_token() }}';
-            $('.attend').empty();
-            $.ajax({
-                type: 'post',
-                url: url,
-                data: {date: date, _token: _token},
-                success: function(data){
-                    console.log(data);
-                    $('.attend').append(data);
-                }
-            });
-        }
-
-        $(document).on('click', '.attendance', function(event){
-            event.preventDefault();
-            var row_id = $(this).closest('tr').attr('id');
-            console.log(row_id);
-
-            var url = "{{ url('/attendance/update/') }}/" + row_id;
-            $('#att_form').attr('action', url);
-            $('#att_form').submit();
-        });
-
-        $(document).on('click', '.attendance_delete', function(event){
-            event.preventDefault();
-            var row_id = $(this).closest('tr').attr('id');
-            var url = "{{ url('/attendance/delete/') }}/" + row_id;
-
-            $('#att_form').attr('action', url);
-            $('#att_form').append('@method("delete")');
-            $('#att_form').submit();
-        });
-
-        $(document).on('click', '.attendance_view', function(event){
-            event.preventDefault();
-            var row_id = $(this).closest('tr').attr('id');
-            var url = "{{ url('/attendance/view/') }}/" + row_id;
-
-            window.open(url);
-        });
-
-        $('#notify_students').click(function(event){
-            $(this).attr('disabled', true);
-            $(this).closest('form').submit();
-            $(this).after('Sending');
-        });
-
-        $('#date_select').click(function(event){
-            event.preventDefault();
-            var date = $('#a_date').val();
-            getAttendances(date);
-        });
-
-        $('#date_clear').click(function(event){
-            event.preventDefault();
             getAttendances();
-        });
 
-    </script>
-@endcan
+            function getAttendances(date = null)
+            {
+                var url = "{{ url('/attendance/get/') }}/" + {{ $room->id }} + "/";
+                var _token = '{{ csrf_token() }}';
+                $('.attend').empty();
+                $.ajax({
+                    type: 'post',
+                    url: url,
+                    data: {date: date, _token: _token},
+                    success: function(data){
+                        console.log(data);
+                        $('.attend').append(data);
+                    }
+                });
+            }
 
-@can('student-only', $room)
-    <script>
+            $(document).on('click', '.attendance', function(event){
+                event.preventDefault();
+                var row_id = $(this).closest('tr').attr('id');
+                console.log(row_id);
 
-        getStudentAttendances();
-
-        function getStudentAttendances()
-        {
-            var url = "{{ url('/show/attendance/') }}/" + {{ $room->id }} + "/";
-            var _token = '{{ csrf_token() }}';
-            $('.attend').empty();
-            $.ajax({
-                url: url,
-                success: function(data){
-                    console.log(data);
-                    $('.attend').append(data);
-                }
+                var url = "{{ url('/attendance/update/') }}/" + row_id;
+                $('#att_form').attr('action', url);
+                $('#att_form').submit();
             });
-        }
 
-        $(document).on('click', '.present', function(event){
-            event.preventDefault();
-            var row_id = $(this).closest('tr').attr('id');
-            var url = "{{ url('/attend/') }}/" + row_id;
+            $(document).on('click', '.attendance_delete', function(event){
+                event.preventDefault();
+                var row_id = $(this).closest('tr').attr('id');
+                var url = "{{ url('/attendance/delete/') }}/" + row_id;
 
-            $('#att_form').attr('action', url);
-            $('#att_form').submit();
-        });
+                $('#att_form').attr('action', url);
+                $('#att_form').append('@method("delete")');
+                $('#att_form').submit();
+            });
 
+            $(document).on('click', '.attendance_view', function(event){
+                event.preventDefault();
+                var row_id = $(this).closest('tr').attr('id');
+                var url = "{{ url('/attendance/view/') }}/" + row_id;
 
-    </script>
-@endcan
+                window.open(url);
+            });
+
+            $('#notify_students').click(function(event){
+                $(this).attr('disabled', true);
+                $(this).closest('form').submit();
+                $(this).after('Sending');
+            });
+
+            $('#date_select').click(function(event){
+                event.preventDefault();
+                var date = $('#a_date').val();
+                getAttendances(date);
+            });
+
+            $('#date_clear').click(function(event){
+                event.preventDefault();
+                getAttendances();
+            });
+
+        </script>
+    @endcan
+
+    @can('student-only', $room)
+        <script>
+            getStudentAttendances();
+
+            function getStudentAttendances()
+            {
+                var url = "{{ url('/show/attendance/') }}/" + {{ $room->id }} + "/";
+                var _token = '{{ csrf_token() }}';
+                $('.attend').empty();
+                $.ajax({
+                    url: url,
+                    success: function(data){
+                        console.log(data);
+                        $('.attend').append(data);
+                    }
+                });
+            }
+
+            $(document).on('click', '.present', function(event){
+                event.preventDefault();
+                var row_id = $(this).closest('tr').attr('id');
+                var url = "{{ url('/attend/') }}/" + row_id;
+
+                $('#att_form').attr('action', url);
+                $('#att_form').submit();
+            });
+        </script>
+    @endcan
 
 @endsection
