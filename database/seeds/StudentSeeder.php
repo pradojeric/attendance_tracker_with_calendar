@@ -32,7 +32,7 @@ class StudentSeeder extends Seeder
         User::find(2)->roles()->sync(2);
         User::find(3)->roles()->sync(2);
 
-        factory(User::class, 10)->create()->each(function ($user){
+        factory(User::class, 20)->create()->each(function ($user){
             $user->roles()->sync(3);
         });
     }

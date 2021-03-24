@@ -14,7 +14,7 @@ class RoomSeeder extends Seeder
      */
     public function run()
     {
-        //
+
         Room::insert([
             ['name' => 'ROOM 1', 'teacher_id' => 2],
             ['name' => 'ROOM 2', 'teacher_id' => 3],
@@ -27,10 +27,12 @@ class RoomSeeder extends Seeder
             ['room_id' => 2, 'day' => 'Monday', 'start_class' => date('H:i', mktime(14,0)), 'end_class' => date('H:i', mktime(15,0))],
         ]);
 
+        $rooms = collect([1,2]);
+
         User::with(['roles'])->whereHas('roles', function($query){
             $query->where('role', 'student');
-        })->each(function($user){
-            $user->rooms()->sync([1,2]);
+        })->each(function($user) use ($rooms){
+            $user->rooms()->sync($rooms->random(rand(1,2)));
         });
     }
 }

@@ -22,6 +22,7 @@ namespace App{
  * @property string $deadline
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $student_list
  * @property-read \App\Room $room
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $students
  * @property-read int|null $students_count

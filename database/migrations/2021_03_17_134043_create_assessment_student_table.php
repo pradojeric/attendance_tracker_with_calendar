@@ -14,7 +14,6 @@ class CreateAssessmentStudentTable extends Migration
     public function up()
     {
         Schema::create('assessment_student', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('assessment_id');
             $table->foreignId('student_id');
             $table->integer('score');

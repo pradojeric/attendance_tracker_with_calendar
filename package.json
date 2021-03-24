@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "chart.js": "^2.9.4",
         "fullcalendar": "^5.5.1",
         "laravel-echo": "^1.10.0",
         "moment": "^2.29.1",

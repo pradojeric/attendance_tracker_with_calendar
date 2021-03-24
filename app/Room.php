@@ -38,5 +38,4 @@ class Room extends Model
     {
         return $this->hasMany(Assessment::class);
     }
-
 }
