@@ -28,7 +28,7 @@ class AssessmentController extends Controller
         $sortedValues = array_values($sorted);
 
 
-        $ranges = [ // the start of each age-range.
+        $ranges = [
             '0-25' => 25,
             '26-50' => 50,
             '51-60' => 60,
@@ -37,8 +37,6 @@ class AssessmentController extends Controller
             '81-90' => 90,
             '91-100' => 100,
         ];
-
-        // return $assessment->studentScores();
 
         $output = collect($ranges)
             ->map(function($range, $key) use ($assessment){
@@ -49,15 +47,21 @@ class AssessmentController extends Controller
                 return $count;
             })->toArray();
 
-        $colors[0] = '#FF0000';
-        $colors[1] = '#FF0000';
-        $colors[2] = '#FF8000';
-        $colors[3] = '#FFFF00';
-        $colors[4] = '#66CC00';
-        $colors[5] = '#80FF00';
-        $colors[6] = '#00FF00';
+        $noExamCount['no exam'] = $assessment->student_list->filter(function($student){
+            return $student->score == null;
+        })->count();
 
-        //return $output;
+
+        $colors[0] = '#CCC';
+        $colors[1] = '#FF0000';
+        $colors[2] = '#FF0000';
+        $colors[3] = '#FF8000';
+        $colors[4] = '#FFFF00';
+        $colors[5] = '#66CC00';
+        $colors[6] = '#80FF00';
+        $colors[7] = '#00FF00';
+
+        $output = $noExamCount + $output;
 
         $labels = array_keys($output);
         $data = array_values($output);

@@ -15,7 +15,7 @@
                 <th>Score</th>
                 <th>Percentile</th>
             </tr>
-            @foreach ($assessment->studentList as $student)
+            @foreach ($assessment->student_list as $student)
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $student->name }}</td>
@@ -85,7 +85,7 @@
     });
 </script>
 
-<script>
+{{-- <script>
     var testx = document.getElementById('test').getContext('2d');
     var test_chart = new Chart(testx, {
         type: 'line',
@@ -108,6 +108,6 @@
 
         },
     });
-</script>
+</script> --}}
 
 @endsection

@@ -31,7 +31,13 @@ class Assessment extends Model
                 $student->score = $student->finishedAssessments->where('pivot.assessment_id', $this->id)->pluck('pivot.score')->first();
                 return $student;
             })
-            ->sortByDesc('score')->values();
+            //->sortByDesc('score')->values();
+            ->sortByDesc(function($student){
+                if($student->score === null){
+                    return -1;
+                }
+                return $student->score;
+            })->values();
     }
 
     public function getPercentile($student)
