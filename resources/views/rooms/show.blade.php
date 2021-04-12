@@ -65,7 +65,7 @@
             </div>
         </form>
         <br>
-
+        <a href="/rooms/{{ $room->id }}/assessments" class="btn btn-info btn-sm">View Assessments</a>
         <form action="/emailNotify/{{$room->id}}" method="post">
             @csrf
             <button type="button" class="btn btn-success btn-sm" id="notify_students">Notify Students on Assignments</button>
